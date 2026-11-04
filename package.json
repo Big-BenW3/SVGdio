@@ -7,7 +7,10 @@
     "dev": "next dev --hostname 0.0.0.0 --port 3100",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0 --port 3100",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
@@ -21,6 +24,9 @@
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "eslint": "^10.14.0",
+    "eslint-config-next": "^16.4.5",
+    "prettier": "^3.9.10",
     "typescript": "^5.8.2"
   }
 }
