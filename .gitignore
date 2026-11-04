@@ -22,3 +22,4 @@ dist/
 !.vscode/extensions.json
 
 # screenshots are committed intentionally (see screenshots/)
+.playwright-cli/
