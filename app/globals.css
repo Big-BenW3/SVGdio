@@ -149,7 +149,7 @@ a { color: inherit; text-decoration: none; }
   filter: drop-shadow(0 0 0 transparent);
 }
 .selection-box {
-  position: absolute; pointer-events: none;
+  position: absolute; left: 0; top: 0; pointer-events: none;
   border: 1.5px solid var(--accent-bright);
   box-shadow: 0 0 0 1px rgba(156, 98, 255, 0.25);
 }

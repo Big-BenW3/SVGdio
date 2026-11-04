@@ -135,10 +135,10 @@ export default function StudioPage() {
 
   const loadFixture = useCallback(() => {
     const fresh = fixture100();
-    setLayers(() => fresh);
+    setSnap((s) => ({ ...s, layers: fresh, timeline: { duration: s.timeline.duration, tracks: [] } }));
     setSelectedIds([]);
     notify("100-layer fixture loaded — drag a layer, watch the fps meter");
-  }, [setLayers, notify]);
+  }, [notify]);
 
   const clearAll = useCallback(() => {
     setSnap((s) => ({ ...s, layers: [], timeline: { duration: 2, tracks: [] } }));

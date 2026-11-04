@@ -354,7 +354,7 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
           if (sel && g.ids.length === 1) {
             const o = g.orig.get(g.ids[0]);
             if (o) {
-              sel.style.transform = `translate3d(${(o.x + dx) * zoom}px, ${(o.y + dy) * zoom}px, 0)`;
+              sel.style.transform = `translate3d(${o.x + dx}px, ${o.y + dy}px, 0)`;
             }
           }
           fpsTick();
@@ -542,9 +542,9 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
             id="svgdio-selection-box"
             className="selection-box"
             style={{
-              width: Math.max(8, primarySelected.width * zoom),
-              height: Math.max(8, (primarySelected.type === "line" ? 8 : primarySelected.height) * zoom),
-              transform: `translate3d(${primarySelected.x * zoom}px, ${primarySelected.y * zoom}px, 0)`,
+              width: Math.max(8, primarySelected.width),
+              height: Math.max(8, primarySelected.type === "line" ? 8 : primarySelected.height),
+              transform: `translate3d(${primarySelected.x}px, ${primarySelected.y}px, 0)`,
             }}
           >
             {(["nw", "ne", "sw", "se"] as const).map((c) => (
@@ -578,9 +578,9 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
         <span ref={fpsRef} title="Frame rate during drag">—fps</span>
       </div>
       <div className="zoom-controls" role="toolbar" aria-label="Zoom">
-        <button onClick={() => setZoom((z) => Math.min(4, +(z * 1.2).toFixed(2)))} aria-label="Zoom in"><Plus size={13} /></button>
-        <span className="zoom-label">{Math.round(zoom * 100)}%</span>
         <button onClick={() => setZoom((z) => Math.max(0.2, +(z / 1.2).toFixed(2)))} aria-label="Zoom out"><Minus size={13} /></button>
+        <span className="zoom-label">{Math.round(zoom * 100)}%</span>
+        <button onClick={() => setZoom((z) => Math.min(4, +(z * 1.2).toFixed(2)))} aria-label="Zoom in"><Plus size={13} /></button>
         <button onClick={fitView} aria-label="Fit to view"><Maximize size={13} /></button>
       </div>
     </div>
