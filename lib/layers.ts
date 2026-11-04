@@ -154,7 +154,16 @@ export interface ImportResult {
   height: number;
 }
 
-const ALLOWED_TAGS = new Set(["rect", "circle", "ellipse", "line", "polyline", "polygon", "path", "text"]);
+const ALLOWED_TAGS = new Set([
+  "rect",
+  "circle",
+  "ellipse",
+  "line",
+  "polyline",
+  "polygon",
+  "path",
+  "text",
+]);
 const BLOCKED_TAGS = new Set([
   "script",
   "foreignobject",
@@ -179,11 +188,6 @@ function numAttr(el: Element, name: string, fallback: number): number {
   if (v == null || v === "") return fallback;
   const n = Number.parseFloat(v);
   return Number.isFinite(n) ? n : fallback;
-}
-
-function strAttr(el: Element, name: string, fallback: string): string {
-  const v = el.getAttribute(name);
-  return v == null || v === "" ? fallback : v;
 }
 
 /** Strip anything that is not a plain color / none. Rejects url(), var(), expressions. */
@@ -251,7 +255,11 @@ function elementToLayer(el: Element, index: number): Layer | null {
   }
   if (tag === "polyline" || tag === "polygon") {
     const raw = el.getAttribute("points") ?? "";
-    const nums = raw.trim().split(/[\s,]+/).map(Number).filter(Number.isFinite);
+    const nums = raw
+      .trim()
+      .split(/[\s,]+/)
+      .map(Number)
+      .filter(Number.isFinite);
     if (nums.length < 4) return null;
     const pts: { x: number; y: number }[] = [];
     for (let i = 0; i + 1 < nums.length; i += 2) pts.push({ x: nums[i], y: nums[i + 1] });
@@ -317,7 +325,10 @@ export function parseSVGToLayers(svgText: string): ImportResult {
     height = numAttr(root, "height", 0) || height;
     const vb = root.getAttribute("viewBox");
     if ((!root.getAttribute("width") || !root.getAttribute("height")) && vb) {
-      const parts = vb.trim().split(/[\s,]+/).map(Number);
+      const parts = vb
+        .trim()
+        .split(/[\s,]+/)
+        .map(Number);
       if (parts.length === 4 && parts.every(Number.isFinite) && parts[2] > 0 && parts[3] > 0) {
         width = Math.min(2000, parts[2]);
         height = Math.min(2000, parts[3]);
@@ -360,7 +371,16 @@ export function parseSVGToLayers(svgText: string): ImportResult {
 
 /* ---------- 100-layer stress fixture ---------- */
 
-const FIXTURE_FILLS = ["#9c62ff", "#b184ff", "#6d34e8", "#99e1bf", "#f0c987", "#ff7ad9", "#7ad9ff", "#e6dcf0"];
+const FIXTURE_FILLS = [
+  "#9c62ff",
+  "#b184ff",
+  "#6d34e8",
+  "#99e1bf",
+  "#f0c987",
+  "#ff7ad9",
+  "#7ad9ff",
+  "#e6dcf0",
+];
 
 export function fixture100(): Layer[] {
   const layers: Layer[] = [];
@@ -368,7 +388,8 @@ export function fixture100(): Layer[] {
     const col = i % 10;
     const row = Math.floor(i / 10);
     const kind = i % 4;
-    const type: LayerType = kind === 0 ? "rect" : kind === 1 ? "ellipse" : kind === 2 ? "line" : "path";
+    const type: LayerType =
+      kind === 0 ? "rect" : kind === 1 ? "ellipse" : kind === 2 ? "line" : "path";
     layers.push(
       createLayer(type, {
         name: `Fixture ${i + 1}`,

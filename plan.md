@@ -1,9 +1,11 @@
 # SVGdio — Plan
 
 ## Goal
+
 Build SVGdio as a visual SVG and CSS studio. Users create shapes on canvas without hand-writing code, arrange 100+ layers at 60fps, style with a property panel, sequence motion on a Timeline, and export clean SVG plus CSS keyframes.
 
 ## Success Criteria
+
 - A new user can draw, import, or start from a template with no SVG knowledge.
 - Dragging and resizing across 100+ layers stays smooth at 60fps on a typical laptop.
 - Property panel edits (fill, stroke, opacity, transform) update the canvas instantly via CSS variables.
@@ -12,11 +14,13 @@ Build SVGdio as a visual SVG and CSS studio. Users create shapes on canvas witho
 - Deploys to Vercel as a static client app.
 
 ## Constraints
+
 - Vercel deployment, no login, local-first like cbrain.
 - No AI required for shape-to-code. Every shape is typed data, and a small compiler maps it to SVG elements. Same input always gives same output.
 - Performance budget: animate only transform and opacity, GPU-composited, no layout reads in move handlers.
 
 ## Approach
+
 Reuse cbrain canvas lessons: React Flow style layering is replaced here with a lighter custom SVG renderer for full control over frame cost.
 
 - Layer model is the source of truth: id, type, geometry, style, transform, opacity, name, visibility, lock.
@@ -26,6 +30,7 @@ Reuse cbrain canvas lessons: React Flow style layering is replaced here with a l
 - Creation paths: shape tools (rect, ellipse, line, text, pen path), SVG paste or file import parsed into layers, and starter templates.
 
 ## Steps
+
 1. Scaffold `SVGdio/` as Next.js app: `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `components/`, `lib/`.
 2. Define `lib/layers.ts`: layer types, defaults, id helper, geometry helpers, import parser for SVG strings and files.
 3. Build canvas renderer in `components/canvas.tsx`: SVG viewport, pan/zoom, selection, drag/resize with pointer events, `translate3d` positioning, `will-change` only while dragging.
@@ -38,6 +43,7 @@ Reuse cbrain canvas lessons: React Flow style layering is replaced here with a l
 10. Polish empty states, templates gallery, keyboard shortcuts, reduced-motion support, and mobile list-first layout.
 
 ## Validation Plan
+
 - `pnpm typecheck` and `pnpm build` pass in `SVGdio/`.
 - Manual: load fixture with 100 layers, drag selection and single layer, confirm no visible jank and no layout thrash in devtools.
 - Manual: draw each tool, import an SVG file, change props, confirm canvas and exported SVG match.
@@ -45,6 +51,7 @@ Reuse cbrain canvas lessons: React Flow style layering is replaced here with a l
 - Manual: reload page, confirm layers and timeline persist.
 
 ## Risks / Open Questions
+
 - Text and complex path editing can blow up scope. Mitigation: v1 supports basic text and poly-path only, full bezier editing is a later milestone.
 - Import of arbitrary SVG with scripts or external refs. Mitigation: sanitize on import, allow shapes/paths/text only, reject the rest with a message.
 - Open: default canvas size and export precision (assumed 800x600, 2-decimal rounding).

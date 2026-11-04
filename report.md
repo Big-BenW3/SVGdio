@@ -46,23 +46,23 @@ CSS keyframes. Local-first, no login, no runtime dependency in exports.
 
 ## File map
 
-| Path | Purpose |
-|---|---|
-| `app/layout.tsx` | Root layout, fonts, metadata |
-| `app/globals.css` | Full design system (~460 lines) |
-| `app/page.tsx` | Studio shell: state, persistence, rail, panels, modals, toast |
-| `lib/layers.ts` | Layer types, factory, geometry, SVG parser + sanitize, fixture100 |
-| `lib/compile.ts` | Timeline model, easing, interpolation, SVG + CSS compilers |
-| `lib/storage.ts` | localStorage snapshot, migration, project JSON, download/copy |
-| `lib/templates.ts` | 4 starter templates + previews |
-| `lib/inspector-helpers.ts` | Inspector label helper |
-| `components/canvas.tsx` | SVG viewport: pan/zoom/select/drag/resize/draw tools |
-| `components/layers.tsx` | Virtualized layer list |
-| `components/inspector.tsx` | Property panel (CSS-variable live writes) |
-| `components/timeline.tsx` | Track editor + playback + preview |
-| `components/modals.tsx` | Export / Import / Templates dialogs |
-| `screenshots/` | Playwright captures (see below) |
-| `public/favicon.svg` | App icon |
+| Path                       | Purpose                                                           |
+| -------------------------- | ----------------------------------------------------------------- |
+| `app/layout.tsx`           | Root layout, fonts, metadata                                      |
+| `app/globals.css`          | Full design system (~460 lines)                                   |
+| `app/page.tsx`             | Studio shell: state, persistence, rail, panels, modals, toast     |
+| `lib/layers.ts`            | Layer types, factory, geometry, SVG parser + sanitize, fixture100 |
+| `lib/compile.ts`           | Timeline model, easing, interpolation, SVG + CSS compilers        |
+| `lib/storage.ts`           | localStorage snapshot, migration, project JSON, download/copy     |
+| `lib/templates.ts`         | 4 starter templates + previews                                    |
+| `lib/inspector-helpers.ts` | Inspector label helper                                            |
+| `components/canvas.tsx`    | SVG viewport: pan/zoom/select/drag/resize/draw tools              |
+| `components/layers.tsx`    | Virtualized layer list                                            |
+| `components/inspector.tsx` | Property panel (CSS-variable live writes)                         |
+| `components/timeline.tsx`  | Track editor + playback + preview                                 |
+| `components/modals.tsx`    | Export / Import / Templates dialogs                               |
+| `screenshots/`             | Playwright captures (see below)                                   |
+| `public/favicon.svg`       | App icon                                                          |
 
 ## Design decisions
 
@@ -145,13 +145,13 @@ playwright-cli -s=svigdio console              # 0 errors, 0 warnings
 
 ## Screenshot list
 
-| File | Content |
-|---|---|
-| `screenshots/01-canvas-layers.png` | Canvas with 10 template layers, list populated, timeline dock |
-| `screenshots/02-inspector-editing.png` | Underline layer selected: inspector Style/Transform/Layer + on-canvas handles |
-| `screenshots/03-timeline-keyframes.png` | Ball X/Y tracks, 5 keyframes, selected keyframe + easing control |
-| `screenshots/04-export-svg.png` | Export modal with compiled standalone SVG + Copy/Download |
-| `screenshots/05-fixture-100.png` | 100-layer stress grid + virtualized list |
+| File                                    | Content                                                                       |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| `screenshots/01-canvas-layers.png`      | Canvas with 10 template layers, list populated, timeline dock                 |
+| `screenshots/02-inspector-editing.png`  | Underline layer selected: inspector Style/Transform/Layer + on-canvas handles |
+| `screenshots/03-timeline-keyframes.png` | Ball X/Y tracks, 5 keyframes, selected keyframe + easing control              |
+| `screenshots/04-export-svg.png`         | Export modal with compiled standalone SVG + Copy/Download                     |
+| `screenshots/05-fixture-100.png`        | 100-layer stress grid + virtualized list                                      |
 
 ## Known gaps
 

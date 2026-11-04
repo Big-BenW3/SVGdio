@@ -25,18 +25,12 @@ const Row = memo(function Row({
   selected,
   onSelect,
   onUpdate,
-  onReorder,
-  onDuplicate,
-  onDelete,
 }: {
   layer: Layer;
   top: number;
   selected: boolean;
   onSelect: (id: string, additive: boolean) => void;
   onUpdate: (id: string, patch: Partial<Layer>) => void;
-  onReorder: (id: string, dir: -1 | 1) => void;
-  onDuplicate: (id: string) => void;
-  onDelete: (id: string) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(layer.name);
@@ -51,7 +45,10 @@ const Row = memo(function Row({
       }}
       title={`${layer.name} — double-click to rename`}
     >
-      <span className="layer-swatch" style={{ background: layer.fill === "none" ? "transparent" : layer.fill }} />
+      <span
+        className="layer-swatch"
+        style={{ background: layer.fill === "none" ? "transparent" : layer.fill }}
+      />
       <span className="layer-type">{typeLabel(layer.type).slice(0, 4).toUpperCase()}</span>
       <span className="layer-name">
         {editing ? (
@@ -98,7 +95,16 @@ const Row = memo(function Row({
   );
 });
 
-export function LayerList({ layers, selectedIds, onSelect, onUpdate, onReorder, onDelete, onDuplicate, onAdd }: LayersProps) {
+export function LayerList({
+  layers,
+  selectedIds,
+  onSelect,
+  onUpdate,
+  onReorder,
+  onDelete,
+  onDuplicate,
+  onAdd,
+}: LayersProps) {
   const [query, setQuery] = useState("");
   const [scrollTop, setScrollTop] = useState(0);
   const [viewH, setViewH] = useState(400);
@@ -135,12 +141,19 @@ export function LayerList({ layers, selectedIds, onSelect, onUpdate, onReorder, 
         </button>
       </div>
       <div className="layer-search">
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search layers…" aria-label="Search layers" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search layers…"
+          aria-label="Search layers"
+        />
       </div>
       {ordered.length === 0 ? (
         <div className="layer-empty">
           <strong>{layers.length === 0 ? "No layers yet" : "No matches"}</strong>
-          {layers.length === 0 ? "Draw a shape, import SVG, or pick a template to begin." : "Try a different search."}
+          {layers.length === 0
+            ? "Draw a shape, import SVG, or pick a template to begin."
+            : "Try a different search."}
         </div>
       ) : (
         <div
@@ -160,9 +173,6 @@ export function LayerList({ layers, selectedIds, onSelect, onUpdate, onReorder, 
                 selected={selectedSet.has(l.id)}
                 onSelect={selectOne}
                 onUpdate={onUpdate}
-                onReorder={onReorder}
-                onDuplicate={(id) => onDuplicate([id])}
-                onDelete={(id) => onDelete([id])}
               />
             ))}
           </div>
@@ -170,16 +180,36 @@ export function LayerList({ layers, selectedIds, onSelect, onUpdate, onReorder, 
       )}
       {selectedIds.length > 0 && (
         <div className="inspector-section" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          <button className="btn" style={{ flex: 1 }} onClick={() => onReorder(selectedIds[selectedIds.length - 1], 1)} title="Bring forward">
+          <button
+            className="btn"
+            style={{ flex: 1 }}
+            onClick={() => onReorder(selectedIds[selectedIds.length - 1], 1)}
+            title="Bring forward"
+          >
             <ArrowUp size={13} /> Front
           </button>
-          <button className="btn" style={{ flex: 1 }} onClick={() => onReorder(selectedIds[selectedIds.length - 1], -1)} title="Send backward">
+          <button
+            className="btn"
+            style={{ flex: 1 }}
+            onClick={() => onReorder(selectedIds[selectedIds.length - 1], -1)}
+            title="Send backward"
+          >
             <ArrowDown size={13} /> Back
           </button>
-          <button className="btn" style={{ flex: 1 }} onClick={() => onDuplicate(selectedIds)} title="Duplicate selected">
+          <button
+            className="btn"
+            style={{ flex: 1 }}
+            onClick={() => onDuplicate(selectedIds)}
+            title="Duplicate selected"
+          >
             + Dup
           </button>
-          <button className="btn" style={{ flex: 1 }} onClick={() => onDelete(selectedIds)} title="Delete selected (Del)">
+          <button
+            className="btn"
+            style={{ flex: 1 }}
+            onClick={() => onDelete(selectedIds)}
+            title="Delete selected (Del)"
+          >
             <Trash2 size={13} />
           </button>
         </div>

@@ -10,13 +10,25 @@ import { TEMPLATES, instantiateTemplate, type Template } from "@/lib/templates";
 
 /* ---------- shared shell ---------- */
 
-function Shell({ title, onClose, children, foot }: { title: string; onClose: () => void; children: React.ReactNode; foot?: React.ReactNode }) {
+function Shell({
+  title,
+  onClose,
+  children,
+  foot,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+  foot?: React.ReactNode;
+}) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" role="dialog" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           {title}
-          <button className="icon-btn" onClick={onClose} aria-label="Close"><X size={14} /></button>
+          <button className="icon-btn" onClick={onClose} aria-label="Close">
+            <X size={14} />
+          </button>
         </div>
         <div className="modal-body">{children}</div>
         {foot && <div className="modal-foot">{foot}</div>}
@@ -28,7 +40,11 @@ function Shell({ title, onClose, children, foot }: { title: string; onClose: () 
 /* ---------- export ---------- */
 
 export function ExportModal({
-  layers, timeline, artboard, onClose, notify,
+  layers,
+  timeline,
+  artboard,
+  onClose,
+  notify,
 }: {
   layers: Layer[];
   timeline: Timeline;
@@ -38,24 +54,41 @@ export function ExportModal({
 }) {
   const [tab, setTab] = useState<"svg" | "css" | "json">("svg");
   const [copied, setCopied] = useState(false);
-  const svg = useMemo(() => layersToSVG(layers, artboard.width, artboard.height), [layers, artboard]);
+  const svg = useMemo(
+    () => layersToSVG(layers, artboard.width, artboard.height),
+    [layers, artboard],
+  );
   const css = useMemo(() => timelineToFullCSS(timeline, layers), [timeline, layers]);
   const json = useMemo(
-    () => exportProjectJSON({ version: 1, savedAt: new Date().toISOString(), layers, timeline, artboard }),
+    () =>
+      exportProjectJSON({
+        version: 1,
+        savedAt: new Date().toISOString(),
+        layers,
+        timeline,
+        artboard,
+      }),
     [layers, timeline, artboard],
   );
   const current = tab === "svg" ? svg : tab === "css" ? css : json;
 
   const doCopy = async () => {
     const ok = await copyText(current);
-    notify(ok ? `${tab.toUpperCase()} copied to clipboard` : "Copy failed — select the code manually");
+    notify(
+      ok ? `${tab.toUpperCase()} copied to clipboard` : "Copy failed — select the code manually",
+    );
     if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     }
   };
   const doDownload = () => {
-    const name = tab === "svg" ? "svigdio-export.svg" : tab === "css" ? "svigdio-motion.css" : "svigdio-project.json";
+    const name =
+      tab === "svg"
+        ? "svigdio-export.svg"
+        : tab === "css"
+          ? "svigdio-motion.css"
+          : "svigdio-project.json";
     const mime = tab === "svg" ? "image/svg+xml" : tab === "css" ? "text/css" : "application/json";
     downloadFile(name, current, mime);
     notify(`Downloaded ${name}`);
@@ -67,19 +100,30 @@ export function ExportModal({
       onClose={onClose}
       foot={
         <>
-          <button className="btn" onClick={doCopy}>{copied ? <Check size={13} /> : <Copy size={13} />} Copy</button>
-          <button className="btn primary" onClick={doDownload}><Download size={13} /> Download .{tab}</button>
+          <button className="btn" onClick={doCopy}>
+            {copied ? <Check size={13} /> : <Copy size={13} />} Copy
+          </button>
+          <button className="btn primary" onClick={doDownload}>
+            <Download size={13} /> Download .{tab}
+          </button>
         </>
       }
     >
       <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
         {(["svg", "css", "json"] as const).map((t) => (
-          <button key={t} className="tl-btn" style={tab === t ? { borderColor: "var(--accent)", color: "#d7baff" } : undefined} onClick={() => setTab(t)}>
+          <button
+            key={t}
+            className="tl-btn"
+            style={tab === t ? { borderColor: "var(--accent)", color: "#d7baff" } : undefined}
+            onClick={() => setTab(t)}
+          >
             {t === "svg" ? "SVG file" : t === "css" ? "CSS keyframes" : "Project JSON"}
           </button>
         ))}
       </div>
-      <pre className="code-preview" style={{ maxHeight: 320 }}>{current}</pre>
+      <pre className="code-preview" style={{ maxHeight: 320 }}>
+        {current}
+      </pre>
       <p className="transform-note">
         {tab === "svg" && "Standalone .svg — drop it anywhere, no runtime needed."}
         {tab === "css" && "Apply to the exported SVG: element ids match the animation selectors."}
@@ -92,7 +136,9 @@ export function ExportModal({
 /* ---------- import ---------- */
 
 export function ImportModal({
-  onImport, onClose, notify,
+  onImport,
+  onClose,
+  notify,
 }: {
   onImport: (layers: Layer[]) => void;
   onClose: () => void;
@@ -117,7 +163,9 @@ export function ImportModal({
     setRejected(res.rejected);
     if (res.layers.length > 0) {
       onImport(res.layers);
-      notify(`Imported ${res.layers.length} layer${res.layers.length === 1 ? "" : "s"} from ${label}`);
+      notify(
+        `Imported ${res.layers.length} layer${res.layers.length === 1 ? "" : "s"} from ${label}`,
+      );
       if (res.rejected.length === 0) onClose();
     } else {
       notify("Import blocked — nothing usable found");
@@ -141,8 +189,16 @@ export function ImportModal({
       onClose={onClose}
       foot={
         <>
-          <button className="btn" onClick={() => fileRef.current?.click()}><FileUp size={13} /> Choose file</button>
-          <button className="btn primary" onClick={() => runImport(text, "pasted markup")} disabled={!text.trim()}>Import layers</button>
+          <button className="btn" onClick={() => fileRef.current?.click()}>
+            <FileUp size={13} /> Choose file
+          </button>
+          <button
+            className="btn primary"
+            onClick={() => runImport(text, "pasted markup")}
+            disabled={!text.trim()}
+          >
+            Import layers
+          </button>
         </>
       }
     >
@@ -163,7 +219,8 @@ export function ImportModal({
         style={{ cursor: "pointer" }}
       >
         Drop a <b>.svg</b> file here, or click to browse.
-        <br />Shapes, paths and text are converted to layers — scripts and refs are stripped.
+        <br />
+        Shapes, paths and text are converted to layers — scripts and refs are stripped.
       </div>
       <input
         ref={fileRef}
@@ -178,11 +235,18 @@ export function ImportModal({
       />
       <div className="field" style={{ marginTop: 12 }}>
         <label>…or paste SVG markup</label>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="<svg …>…</svg>" style={{ minHeight: 120, fontFamily: "var(--font-mono)", fontSize: 10 }} />
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="<svg …>…</svg>"
+          style={{ minHeight: 120, fontFamily: "var(--font-mono)", fontSize: 10 }}
+        />
       </div>
       {rejected.length > 0 && (
         <div className="import-warn">
-          {rejected.slice(0, 6).map((r, i) => (<div key={i}>• {r}</div>))}
+          {rejected.slice(0, 6).map((r, i) => (
+            <div key={i}>• {r}</div>
+          ))}
           {rejected.length > 6 && <div>• …and {rejected.length - 6} more</div>}
         </div>
       )}
@@ -192,7 +256,13 @@ export function ImportModal({
 
 /* ---------- templates ---------- */
 
-export function TemplatesModal({ onPick, onClose }: { onPick: (t: Template) => void; onClose: () => void }) {
+export function TemplatesModal({
+  onPick,
+  onClose,
+}: {
+  onPick: (t: Template) => void;
+  onClose: () => void;
+}) {
   return (
     <Shell title="Start from a template" onClose={onClose}>
       <div className="template-grid">
@@ -205,13 +275,18 @@ export function TemplatesModal({ onPick, onClose }: { onPick: (t: Template) => v
               onClose();
             }}
           >
-            <span dangerouslySetInnerHTML={{ __html: t.preview }} style={{ padding: 0, display: "block" }} />
+            <span
+              dangerouslySetInnerHTML={{ __html: t.preview }}
+              style={{ padding: 0, display: "block" }}
+            />
             <span>{t.name}</span>
             <small>{t.description}</small>
           </button>
         ))}
       </div>
-      <p className="transform-note">Templates replace nothing — layers are appended to your canvas.</p>
+      <p className="transform-note">
+        Templates replace nothing — layers are appended to your canvas.
+      </p>
     </Shell>
   );
 }

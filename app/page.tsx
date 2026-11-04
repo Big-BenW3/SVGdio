@@ -3,18 +3,42 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Circle, Hand, Minus, MousePointer2, PenTool, Shapes, Square, Type,
-  FileUp, FolderOpen, Download, LayoutTemplate, FlaskConical, Trash2,
+  Circle,
+  Hand,
+  Minus,
+  MousePointer2,
+  PenTool,
+  Shapes,
+  Square,
+  Type,
+  FileUp,
+  FolderOpen,
+  Download,
+  LayoutTemplate,
+  FlaskConical,
+  Trash2,
 } from "lucide-react";
 import { Canvas } from "@/components/canvas";
 import { LayerList } from "@/components/layers";
 import { Inspector } from "@/components/inspector";
 import { TimelineDock } from "@/components/timeline";
-import { ExportModal, ImportModal, TemplatesModal, instantiateTemplate, type Template } from "@/components/modals";
+import {
+  ExportModal,
+  ImportModal,
+  TemplatesModal,
+  instantiateTemplate,
+  type Template,
+} from "@/components/modals";
 import { BrandMark } from "@/components/brand-mark";
 import { createLayer, duplicateLayer, fixture100, type Layer, type Tool } from "@/lib/layers";
 import type { Timeline } from "@/lib/compile";
-import { defaultSnapshot, importProjectJSON, loadSnapshot, saveSnapshot, type WorkspaceSnapshot } from "@/lib/storage";
+import {
+  defaultSnapshot,
+  importProjectJSON,
+  loadSnapshot,
+  saveSnapshot,
+  type WorkspaceSnapshot,
+} from "@/lib/storage";
 
 type Modal = null | "export" | "import" | "templates";
 
@@ -24,7 +48,12 @@ const RAIL_TOOLS: { id: Tool; icon: React.ReactNode; label: string; kbd: string 
   { id: "ellipse", icon: <Circle size={16} />, label: "Ellipse (O)", kbd: "O" },
   { id: "line", icon: <Minus size={16} />, label: "Line (L)", kbd: "L" },
   { id: "text", icon: <Type size={16} />, label: "Text (T)", kbd: "T" },
-  { id: "pen", icon: <PenTool size={16} />, label: "Pen (P) — click points, Esc to finish", kbd: "P" },
+  {
+    id: "pen",
+    icon: <PenTool size={16} />,
+    label: "Pen (P) — click points, Esc to finish",
+    kbd: "P",
+  },
   { id: "pan", icon: <Hand size={16} />, label: "Pan (H) — or hold Space", kbd: "H" },
 ];
 
@@ -50,6 +79,7 @@ export default function StudioPage() {
 
   /* load stored workspace after mount (keeps SSR + first paint identical) */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional post-mount load so SSR HTML matches first paint.
     setSnap(loadSnapshot());
     loadedRef.current = true;
   }, []);
@@ -71,22 +101,34 @@ export default function StudioPage() {
     setSnap((s) => ({ ...s, timeline: t }));
   }, []);
 
-  const updateLayer = useCallback((id: string, patch: Partial<Layer>) => {
-    setLayers((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
-  }, [setLayers]);
+  const updateLayer = useCallback(
+    (id: string, patch: Partial<Layer>) => {
+      setLayers((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
+    },
+    [setLayers],
+  );
 
-  const createOnCanvas = useCallback((layer: Layer) => {
-    setLayers((prev) => [...prev, layer]);
-    setSelectedIds([layer.id]);
-  }, [setLayers]);
+  const createOnCanvas = useCallback(
+    (layer: Layer) => {
+      setLayers((prev) => [...prev, layer]);
+      setSelectedIds([layer.id]);
+    },
+    [setLayers],
+  );
 
-  const deleteIds = useCallback((ids: string[]) => {
-    if (ids.length === 0) return;
-    const gone = new Set(ids);
-    setLayers((prev) => prev.filter((l) => !gone.has(l.id)));
-    setSnap((s) => ({ ...s, timeline: { ...s.timeline, tracks: s.timeline.tracks.filter((t) => !gone.has(t.layerId)) } }));
-    setSelectedIds((prev) => prev.filter((id) => !gone.has(id)));
-  }, [setLayers]);
+  const deleteIds = useCallback(
+    (ids: string[]) => {
+      if (ids.length === 0) return;
+      const gone = new Set(ids);
+      setLayers((prev) => prev.filter((l) => !gone.has(l.id)));
+      setSnap((s) => ({
+        ...s,
+        timeline: { ...s.timeline, tracks: s.timeline.tracks.filter((t) => !gone.has(t.layerId)) },
+      }));
+      setSelectedIds((prev) => prev.filter((id) => !gone.has(id)));
+    },
+    [setLayers],
+  );
 
   useEffect(() => {
     const onDelete = () => deleteIds(selectedIds);
@@ -94,49 +136,68 @@ export default function StudioPage() {
     return () => window.removeEventListener("svgdio:delete-selected", onDelete);
   }, [selectedIds, deleteIds]);
 
-  const duplicateIds = useCallback((ids: string[]) => {
-    const byId = new Map(layers.map((l) => [l.id, l]));
-    const copies = ids.map((id) => byId.get(id)).filter((l): l is Layer => !!l).map((l) => duplicateLayer(l));
-    if (copies.length === 0) return;
-    setLayers((prev) => [...prev, ...copies]);
-    setSelectedIds(copies.map((c) => c.id));
-  }, [layers, setLayers]);
+  const duplicateIds = useCallback(
+    (ids: string[]) => {
+      const byId = new Map(layers.map((l) => [l.id, l]));
+      const copies = ids
+        .map((id) => byId.get(id))
+        .filter((l): l is Layer => !!l)
+        .map((l) => duplicateLayer(l));
+      if (copies.length === 0) return;
+      setLayers((prev) => [...prev, ...copies]);
+      setSelectedIds(copies.map((c) => c.id));
+    },
+    [layers, setLayers],
+  );
 
-  const reorder = useCallback((id: string, dir: -1 | 1) => {
-    setLayers((prev) => {
-      const i = prev.findIndex((l) => l.id === id);
-      const j = i + dir;
-      if (i < 0 || j < 0 || j >= prev.length) return prev;
-      const next = [...prev];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
-  }, [setLayers]);
+  const reorder = useCallback(
+    (id: string, dir: -1 | 1) => {
+      setLayers((prev) => {
+        const i = prev.findIndex((l) => l.id === id);
+        const j = i + dir;
+        if (i < 0 || j < 0 || j >= prev.length) return prev;
+        const next = [...prev];
+        [next[i], next[j]] = [next[j], next[i]];
+        return next;
+      });
+    },
+    [setLayers],
+  );
 
-  const importLayers = useCallback((fresh: Layer[]) => {
-    setLayers((prev) => [...prev, ...fresh]);
-    setSelectedIds(fresh.map((l) => l.id));
-  }, [setLayers]);
+  const importLayers = useCallback(
+    (fresh: Layer[]) => {
+      setLayers((prev) => [...prev, ...fresh]);
+      setSelectedIds(fresh.map((l) => l.id));
+    },
+    [setLayers],
+  );
 
-  const pickTemplate = useCallback((t: Template) => {
-    const { layers: fresh, timeline: tplTimeline } = instantiateTemplate(t);
-    setLayers((prev) => [...prev, ...fresh]);
-    if (tplTimeline) {
-      setSnap((s) => ({
-        ...s,
-        timeline: {
-          duration: Math.max(s.timeline.duration, tplTimeline.duration),
-          tracks: [...s.timeline.tracks, ...tplTimeline.tracks],
-        },
-      }));
-    }
-    setSelectedIds(fresh.map((l) => l.id));
-    notify(`Template added: ${t.name}`);
-  }, [setLayers, notify]);
+  const pickTemplate = useCallback(
+    (t: Template) => {
+      const { layers: fresh, timeline: tplTimeline } = instantiateTemplate(t);
+      setLayers((prev) => [...prev, ...fresh]);
+      if (tplTimeline) {
+        setSnap((s) => ({
+          ...s,
+          timeline: {
+            duration: Math.max(s.timeline.duration, tplTimeline.duration),
+            tracks: [...s.timeline.tracks, ...tplTimeline.tracks],
+          },
+        }));
+      }
+      setSelectedIds(fresh.map((l) => l.id));
+      notify(`Template added: ${t.name}`);
+    },
+    [setLayers, notify],
+  );
 
   const loadFixture = useCallback(() => {
     const fresh = fixture100();
-    setSnap((s) => ({ ...s, layers: fresh, timeline: { duration: s.timeline.duration, tracks: [] } }));
+    setSnap((s) => ({
+      ...s,
+      layers: fresh,
+      timeline: { duration: s.timeline.duration, tracks: [] },
+    }));
     setSelectedIds([]);
     notify("100-layer fixture loaded — drag a layer, watch the fps meter");
   }, [notify]);
@@ -145,22 +206,25 @@ export default function StudioPage() {
     setSnap((s) => ({ ...s, layers: [], timeline: { duration: 2, tracks: [] } }));
     setSelectedIds([]);
     notify("Canvas cleared");
-  }, []);
-
-  const openProjectFile = useCallback((f: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const next = importProjectJSON(String(reader.result ?? ""));
-        setSnap(next);
-        setSelectedIds([]);
-        notify(`Project opened — ${next.layers.length} layers`);
-      } catch {
-        notify("Could not open project — invalid JSON");
-      }
-    };
-    reader.readAsText(f);
   }, [notify]);
+
+  const openProjectFile = useCallback(
+    (f: File) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const next = importProjectJSON(String(reader.result ?? ""));
+          setSnap(next);
+          setSelectedIds([]);
+          notify(`Project opened — ${next.layers.length} layers`);
+        } catch {
+          notify("Could not open project — invalid JSON");
+        }
+      };
+      reader.readAsText(f);
+    },
+    [notify],
+  );
 
   const selectedLayer = useMemo(
     () => (selectedIds.length === 1 ? layers.find((l) => l.id === selectedIds[0]) : undefined),
@@ -172,22 +236,45 @@ export default function StudioPage() {
       <header className="studio-topbar">
         <span className="studio-brand">
           <BrandMark className="studio-mark" />
-          <span className="studio-word">SVG<em>dio</em></span>
+          <span className="studio-word">
+            SVG<em>dio</em>
+          </span>
         </span>
         <span className="topbar-sep" />
-        <span className="topbar-doc"><i />{artboard.width}×{artboard.height} · {layers.length} layers</span>
+        <span className="topbar-doc">
+          <i />
+          {artboard.width}×{artboard.height} · {layers.length} layers
+        </span>
         <span className="topbar-spacer" />
-        <span className="topbar-hint" title="Last autosaved">autosaved {savedTick > 0 ? "✓" : "…"}</span>
-        <button className="topbar-btn" onClick={() => setModal("templates")} title="Starter templates">
+        <span className="topbar-hint" title="Last autosaved">
+          autosaved {savedTick > 0 ? "✓" : "…"}
+        </span>
+        <button
+          className="topbar-btn"
+          onClick={() => setModal("templates")}
+          title="Starter templates"
+        >
           <LayoutTemplate size={14} /> Templates
         </button>
-        <button className="topbar-btn" onClick={() => setModal("import")} title="Import SVG (paste or file)">
+        <button
+          className="topbar-btn"
+          onClick={() => setModal("import")}
+          title="Import SVG (paste or file)"
+        >
           <FileUp size={14} /> Import
         </button>
-        <button className="topbar-btn" onClick={() => openRef.current?.click()} title="Open project JSON">
+        <button
+          className="topbar-btn"
+          onClick={() => openRef.current?.click()}
+          title="Open project JSON"
+        >
           <FolderOpen size={14} /> Open
         </button>
-        <button className="topbar-btn primary" onClick={() => setModal("export")} title="Export SVG + CSS">
+        <button
+          className="topbar-btn primary"
+          onClick={() => setModal("export")}
+          title="Export SVG + CSS"
+        >
           <Download size={14} /> Export
         </button>
         <input
@@ -218,14 +305,29 @@ export default function StudioPage() {
             </button>
           ))}
           <span className="rail-sep" />
-          <button className="rail-btn" title="Add rectangle" aria-label="Add rectangle" onClick={() => createOnCanvas(createLayer("rect"))}>
+          <button
+            className="rail-btn"
+            title="Add rectangle"
+            aria-label="Add rectangle"
+            onClick={() => createOnCanvas(createLayer("rect"))}
+          >
             <Shapes size={16} />
           </button>
-          <button className="rail-btn" title="Load 100-layer stress fixture" aria-label="Load fixture" onClick={loadFixture}>
+          <button
+            className="rail-btn"
+            title="Load 100-layer stress fixture"
+            aria-label="Load fixture"
+            onClick={loadFixture}
+          >
             <FlaskConical size={16} />
           </button>
           <span className="rail-spacer" />
-          <button className="rail-btn" title="Delete all layers + tracks" aria-label="Clear all" onClick={clearAll}>
+          <button
+            className="rail-btn"
+            title="Delete all layers + tracks"
+            aria-label="Clear all"
+            onClick={clearAll}
+          >
             <Trash2 size={16} />
           </button>
         </nav>
@@ -258,9 +360,15 @@ export default function StudioPage() {
           />
           {layers.length === 0 && (
             <div className="empty-canvas-cta">
-              <button className="btn" onClick={() => setModal("templates")}>Templates</button>
-              <button className="btn" onClick={() => setModal("import")}>Import SVG</button>
-              <button className="btn" onClick={() => createOnCanvas(createLayer("rect"))}>Draw rect <span className="kbd">R</span></button>
+              <button className="btn" onClick={() => setModal("templates")}>
+                Templates
+              </button>
+              <button className="btn" onClick={() => setModal("import")}>
+                Import SVG
+              </button>
+              <button className="btn" onClick={() => createOnCanvas(createLayer("rect"))}>
+                Draw rect <span className="kbd">R</span>
+              </button>
             </div>
           )}
           <TimelineDock
@@ -279,7 +387,13 @@ export default function StudioPage() {
       </div>
 
       {modal === "export" && (
-        <ExportModal layers={layers} timeline={timeline} artboard={artboard} onClose={() => setModal(null)} notify={notify} />
+        <ExportModal
+          layers={layers}
+          timeline={timeline}
+          artboard={artboard}
+          onClose={() => setModal(null)}
+          notify={notify}
+        />
       )}
       {modal === "import" && (
         <ImportModal onImport={importLayers} onClose={() => setModal(null)} notify={notify} />
@@ -287,7 +401,9 @@ export default function StudioPage() {
       {modal === "templates" && (
         <TemplatesModal onPick={pickTemplate} onClose={() => setModal(null)} />
       )}
-      <div className={`toast${toast ? " show" : ""}`} role="status">{toast}</div>
+      <div className={`toast${toast ? " show" : ""}`} role="status">
+        {toast}
+      </div>
     </div>
   );
 }

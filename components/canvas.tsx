@@ -32,7 +32,13 @@ interface NodeProps {
   onPointerDown: (e: React.PointerEvent, id: string) => void;
 }
 
-const LayerNode = memo(function LayerNode({ layer, selected, dragging, override, onPointerDown }: NodeProps) {
+const LayerNode = memo(function LayerNode({
+  layer,
+  selected,
+  dragging,
+  override,
+  onPointerDown,
+}: NodeProps) {
   const l = useMemo(() => ({ ...layer, ...override }), [layer, override]);
   if (!l.visible) return null;
   const vars = {
@@ -47,7 +53,11 @@ const LayerNode = memo(function LayerNode({ layer, selected, dragging, override,
       opacity={l.opacity}
       onPointerDown={(e) => onPointerDown(e, l.id)}
     >
-      <g transform={l.rotation !== 0 ? `rotate(${l.rotation} ${l.width / 2} ${l.height / 2})` : undefined}>
+      <g
+        transform={
+          l.rotation !== 0 ? `rotate(${l.rotation} ${l.width / 2} ${l.height / 2})` : undefined
+        }
+      >
         <ShapeShape l={l} />
       </g>
       {selected && (
@@ -70,41 +80,109 @@ const LayerNode = memo(function LayerNode({ layer, selected, dragging, override,
 function ShapeShape({ l }: { l: Layer }) {
   switch (l.type) {
     case "rect":
-      return <rect x={0} y={0} width={l.width} height={l.height} rx={l.cornerRadius} fill="var(--fill)" stroke="var(--stroke)" strokeWidth={l.strokeWidth} />;
+      return (
+        <rect
+          x={0}
+          y={0}
+          width={l.width}
+          height={l.height}
+          rx={l.cornerRadius}
+          fill="var(--fill)"
+          stroke="var(--stroke)"
+          strokeWidth={l.strokeWidth}
+        />
+      );
     case "ellipse":
-      return <ellipse cx={l.width / 2} cy={l.height / 2} rx={l.width / 2} ry={l.height / 2} fill="var(--fill)" stroke="var(--stroke)" strokeWidth={l.strokeWidth} />;
+      return (
+        <ellipse
+          cx={l.width / 2}
+          cy={l.height / 2}
+          rx={l.width / 2}
+          ry={l.height / 2}
+          fill="var(--fill)"
+          stroke="var(--stroke)"
+          strokeWidth={l.strokeWidth}
+        />
+      );
     case "line": {
-      const pts = l.points ?? [{ x: 0, y: 0 }, { x: l.width, y: 0 }];
+      const pts = l.points ?? [
+        { x: 0, y: 0 },
+        { x: l.width, y: 0 },
+      ];
       return (
         <g>
-          <path d={pointsToPath(pts)} fill="none" stroke="transparent" strokeWidth={Math.max(14, l.strokeWidth)} pointerEvents="stroke" />
-          <path d={pointsToPath(pts)} fill="none" stroke={l.stroke === "none" ? "#e6dcf0" : "var(--stroke)"} strokeWidth={l.strokeWidth} strokeLinecap="round" />
+          <path
+            d={pointsToPath(pts)}
+            fill="none"
+            stroke="transparent"
+            strokeWidth={Math.max(14, l.strokeWidth)}
+            pointerEvents="stroke"
+          />
+          <path
+            d={pointsToPath(pts)}
+            fill="none"
+            stroke={l.stroke === "none" ? "#e6dcf0" : "var(--stroke)"}
+            strokeWidth={l.strokeWidth}
+            strokeLinecap="round"
+          />
         </g>
       );
     }
     case "text":
       return (
-        <text x={0} y={l.fontSize ?? 24} fontSize={l.fontSize ?? 24} fontFamily="Manrope, system-ui, sans-serif" fill="var(--fill)">
+        <text
+          x={0}
+          y={l.fontSize ?? 24}
+          fontSize={l.fontSize ?? 24}
+          fontFamily="Manrope, system-ui, sans-serif"
+          fill="var(--fill)"
+        >
           {l.text ?? ""}
         </text>
       );
     case "path": {
       const d = l.pathData ?? pointsToPath(l.points ?? []);
-      return <path d={d} fill="var(--fill)" stroke="var(--stroke)" strokeWidth={l.strokeWidth} strokeLinejoin="round" strokeLinecap="round" />;
+      return (
+        <path
+          d={d}
+          fill="var(--fill)"
+          stroke="var(--stroke)"
+          strokeWidth={l.strokeWidth}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      );
     }
   }
 }
 
 /* ---------- canvas ---------- */
 
-export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelect, onUpdate, onCreate, onToolChange, notify }: CanvasProps) {
+export function Canvas({
+  layers,
+  selectedIds,
+  tool,
+  artboard,
+  overrides,
+  onSelect,
+  onUpdate,
+  onCreate,
+  onToolChange,
+  notify,
+}: CanvasProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 48, y: 40 });
   const [dragIds, setDragIds] = useState<string[]>([]);
   const [spaceDown, setSpaceDown] = useState(false);
-  const [draft, setDraft] = useState<{ x: number; y: number; w: number; h: number; tool: Tool } | null>(null);
+  const [draft, setDraft] = useState<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    tool: Tool;
+  } | null>(null);
   const [penPoints, setPenPoints] = useState<{ x: number; y: number }[] | null>(null);
   const [penPreview, setPenPreview] = useState<{ x: number; y: number } | null>(null);
   const gestureRef = useRef<null | {
@@ -123,7 +201,8 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
   const fpsRef = useRef<HTMLSpanElement>(null);
   const byId = useMemo(() => new Map(layers.map((l) => [l.id, l])), [layers]);
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const primarySelected = selectedIds.length > 0 ? byId.get(selectedIds[selectedIds.length - 1]) : undefined;
+  const primarySelected =
+    selectedIds.length > 0 ? byId.get(selectedIds[selectedIds.length - 1]) : undefined;
 
   /* surface transform — pan/zoom write style directly, no re-render needed */
   useEffect(() => {
@@ -131,11 +210,43 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
     if (el) el.style.transform = `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})`;
   }, [pan, zoom]);
 
+  const finishPen = useCallback(() => {
+    if (!penPoints || penPoints.length < 2) {
+      setPenPoints(null);
+      setPenPreview(null);
+      return;
+    }
+    const xs = penPoints.map((p) => p.x);
+    const ys = penPoints.map((p) => p.y);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    onCreate(
+      createLayer("path", {
+        x: Math.round(minX * 10) / 10,
+        y: Math.round(minY * 10) / 10,
+        width: Math.max(1, Math.round((Math.max(...xs) - minX) * 10) / 10),
+        height: Math.max(1, Math.round((Math.max(...ys) - minY) * 10) / 10),
+        points: penPoints.map((p) => ({
+          x: Math.round((p.x - minX) * 10) / 10,
+          y: Math.round((p.y - minY) * 10) / 10,
+        })),
+      }),
+    );
+    setPenPoints(null);
+    setPenPreview(null);
+    onToolChange("select");
+    notify("Path created — Esc finished pen mode");
+  }, [penPoints, onCreate, onToolChange, notify]);
+
   /* keyboard: space-pan, delete, escape, arrows */
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT")) return;
+      if (
+        target &&
+        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT")
+      )
+        return;
       if (e.code === "Space") {
         setSpaceDown(true);
         e.preventDefault();
@@ -156,9 +267,14 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
         const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
         for (const id of selectedIds) {
           const l = byId.get(id);
-          if (l && !l.locked) onUpdate(id, { x: Math.round((l.x + dx) * 10) / 10, y: Math.round((l.y + dy) * 10) / 10 });
+          if (l && !l.locked)
+            onUpdate(id, {
+              x: Math.round((l.x + dx) * 10) / 10,
+              y: Math.round((l.y + dy) * 10) / 10,
+            });
         }
-      } else if ((e.key === "v" || e.key === "V") && !e.metaKey && !e.ctrlKey) onToolChange("select");
+      } else if ((e.key === "v" || e.key === "V") && !e.metaKey && !e.ctrlKey)
+        onToolChange("select");
       else if (e.key === "r" || e.key === "R") onToolChange("rect");
       else if (e.key === "o" || e.key === "O") onToolChange("ellipse");
       else if (e.key === "l" || e.key === "L") onToolChange("line");
@@ -209,33 +325,20 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
     };
     stage.addEventListener("wheel", handler, { passive: false });
     return () => stage.removeEventListener("wheel", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const finishPen = useCallback(() => {
-    if (!penPoints || penPoints.length < 2) {
-      setPenPoints(null);
-      setPenPreview(null);
-      return;
+  const fpsFrames = useRef<number[]>([]);
+  function fpsTick() {
+    const now = performance.now();
+    const arr = fpsFrames.current;
+    arr.push(now);
+    while (arr.length > 0 && now - arr[0] > 500) arr.shift();
+    if (fpsRef.current && arr.length > 4) {
+      const span = (arr[arr.length - 1] - arr[0]) / 1000;
+      const fps = span > 0 ? Math.round((arr.length - 1) / span) : 0;
+      fpsRef.current.textContent = `${fps}fps`;
     }
-    const xs = penPoints.map((p) => p.x);
-    const ys = penPoints.map((p) => p.y);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
-    onCreate(
-      createLayer("path", {
-        x: Math.round(minX * 10) / 10,
-        y: Math.round(minY * 10) / 10,
-        width: Math.max(1, Math.round((Math.max(...xs) - minX) * 10) / 10),
-        height: Math.max(1, Math.round((Math.max(...ys) - minY) * 10) / 10),
-        points: penPoints.map((p) => ({ x: Math.round((p.x - minX) * 10) / 10, y: Math.round((p.y - minY) * 10) / 10 })),
-      }),
-    );
-    setPenPoints(null);
-    setPenPreview(null);
-    onToolChange("select");
-    notify("Path created — Esc finished pen mode");
-  }, [penPoints, onCreate, onToolChange, notify]);
+  }
 
   /* pointer handlers — one layout read per gesture (cached rect), then pure math */
   const onStagePointerDown = useCallback(
@@ -245,7 +348,16 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
       stage.focus({ preventScroll: true });
       if (e.button === 1 || tool === "pan" || spaceDown) {
         stage.setPointerCapture(e.pointerId);
-        gestureRef.current = { kind: "pan", startX: e.clientX, startY: e.clientY, origPan: { ...pan }, ids: [], orig: new Map(), raf: 0, moved: false };
+        gestureRef.current = {
+          kind: "pan",
+          startX: e.clientX,
+          startY: e.clientY,
+          origPan: { ...pan },
+          ids: [],
+          orig: new Map(),
+          raf: 0,
+          moved: false,
+        };
         return;
       }
       if (e.button !== 0) return;
@@ -270,14 +382,32 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
       if (tool === "rect" || tool === "ellipse" || tool === "line") {
         if (!inside) return;
         stage.setPointerCapture(e.pointerId);
-        gestureRef.current = { kind: "draw", startX: pt.x, startY: pt.y, origPan: { ...pan }, ids: [], orig: new Map(), raf: 0, moved: false };
+        gestureRef.current = {
+          kind: "draw",
+          startX: pt.x,
+          startY: pt.y,
+          origPan: { ...pan },
+          ids: [],
+          orig: new Map(),
+          raf: 0,
+          moved: false,
+        };
         setDraft({ x: pt.x, y: pt.y, w: 0, h: 0, tool });
         return;
       }
       // select tool on empty stage: start pan (background drag pans)
       if ((e.target as HTMLElement).closest("[data-layer-id]") == null) {
         stage.setPointerCapture(e.pointerId);
-        gestureRef.current = { kind: "pan", startX: e.clientX, startY: e.clientY, origPan: { ...pan }, ids: [], orig: new Map(), raf: 0, moved: false };
+        gestureRef.current = {
+          kind: "pan",
+          startX: e.clientX,
+          startY: e.clientY,
+          origPan: { ...pan },
+          ids: [],
+          orig: new Map(),
+          raf: 0,
+          moved: false,
+        };
       }
     },
     [tool, spaceDown, pan, artboard, toArtboard, onCreate, onToolChange, notify],
@@ -309,7 +439,16 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
         const l = byId.get(did);
         if (l && !l.locked) orig.set(did, { x: l.x, y: l.y });
       }
-      gestureRef.current = { kind: "drag", startX: e.clientX, startY: e.clientY, origPan: { ...pan }, ids: [...orig.keys()], orig, raf: 0, moved: false };
+      gestureRef.current = {
+        kind: "drag",
+        startX: e.clientX,
+        startY: e.clientY,
+        origPan: { ...pan },
+        ids: [...orig.keys()],
+        orig,
+        raf: 0,
+        moved: false,
+      };
       setDragIds([...orig.keys()]);
       // cache live DOM nodes once (single query, no per-move reads)
       dragNodeRefs.current.clear();
@@ -362,7 +501,13 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
           const pt = toArtboard(cx, cy);
           const x = Math.min(g.startX, pt.x);
           const y = Math.min(g.startY, pt.y);
-          setDraft({ x: Math.max(0, x), y: Math.max(0, y), w: Math.abs(pt.x - g.startX), h: Math.abs(pt.y - g.startY), tool: draft?.tool ?? "rect" });
+          setDraft({
+            x: Math.max(0, x),
+            y: Math.max(0, y),
+            w: Math.abs(pt.x - g.startX),
+            h: Math.abs(pt.y - g.startY),
+            tool: draft?.tool ?? "rect",
+          });
           g.moved = true;
         } else if (g.kind === "resize" && g.resizeOrig && g.ids.length === 1) {
           const dx = (cx - g.startX) / zoom;
@@ -381,7 +526,12 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
             height = Math.max(4, o.height - dy);
             y = o.y + o.height - height;
           }
-          onUpdate(g.ids[0], { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10, width: Math.round(width * 10) / 10, height: Math.round(height * 10) / 10 });
+          onUpdate(g.ids[0], {
+            x: Math.round(x * 10) / 10,
+            y: Math.round(y * 10) / 10,
+            width: Math.round(width * 10) / 10,
+            height: Math.round(height * 10) / 10,
+          });
         } else if (g.kind === "rotate" && g.ids.length === 1) {
           const l = byId.get(g.ids[0]);
           if (l) {
@@ -413,7 +563,10 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
         dragNodeRefs.current.clear();
         if (g.moved) {
           for (const [id, o] of g.orig) {
-            onUpdate(id, { x: Math.round((o.x + dx) * 10) / 10, y: Math.round((o.y + dy) * 10) / 10 });
+            onUpdate(id, {
+              x: Math.round((o.x + dx) * 10) / 10,
+              y: Math.round((o.y + dy) * 10) / 10,
+            });
           }
         }
         setDragIds([]);
@@ -425,7 +578,13 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
           y: Math.round(draft.y * 10) / 10,
           width: Math.round(Math.max(4, draft.w) * 10) / 10,
           height: Math.round(Math.max(4, draft.h) * 10) / 10,
-          points: t === "line" ? [{ x: 0, y: 0 }, { x: Math.round(Math.max(4, draft.w)), y: Math.round(Math.max(4, draft.h)) }] : undefined,
+          points:
+            t === "line"
+              ? [
+                  { x: 0, y: 0 },
+                  { x: Math.round(Math.max(4, draft.w)), y: Math.round(Math.max(4, draft.h)) },
+                ]
+              : undefined,
         });
         onCreate(layer);
         onToolChange("select");
@@ -435,43 +594,70 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
     [tool, spaceDown, zoom, draft, onSelect, onUpdate, onCreate, onToolChange],
   );
 
-  const beginResize = useCallback((e: React.PointerEvent, corner: string) => {
-    if (primarySelected == null || primarySelected.locked) return;
-    e.stopPropagation();
-    e.preventDefault();
-    const stage = stageRef.current;
-    if (stage) stage.setPointerCapture(e.pointerId);
-    gestureRef.current = {
-      kind: "resize",
-      startX: e.clientX,
-      startY: e.clientY,
-      origPan: { x: 0, y: 0 },
-      ids: [primarySelected.id],
-      orig: new Map(),
-      corner,
-      resizeOrig: { x: primarySelected.x, y: primarySelected.y, width: primarySelected.width, height: primarySelected.height },
-      raf: 0,
-      moved: false,
-    };
-  }, [primarySelected]);
+  const beginResize = useCallback(
+    (e: React.PointerEvent, corner: string) => {
+      if (primarySelected == null || primarySelected.locked) return;
+      e.stopPropagation();
+      e.preventDefault();
+      const stage = stageRef.current;
+      if (stage) stage.setPointerCapture(e.pointerId);
+      gestureRef.current = {
+        kind: "resize",
+        startX: e.clientX,
+        startY: e.clientY,
+        origPan: { x: 0, y: 0 },
+        ids: [primarySelected.id],
+        orig: new Map(),
+        corner,
+        resizeOrig: {
+          x: primarySelected.x,
+          y: primarySelected.y,
+          width: primarySelected.width,
+          height: primarySelected.height,
+        },
+        raf: 0,
+        moved: false,
+      };
+    },
+    [primarySelected],
+  );
 
-  const beginRotate = useCallback((e: React.PointerEvent) => {
-    if (primarySelected == null || primarySelected.locked) return;
-    e.stopPropagation();
-    e.preventDefault();
-    const stage = stageRef.current;
-    if (stage) stage.setPointerCapture(e.pointerId);
-    gestureRef.current = { kind: "rotate", startX: e.clientX, startY: e.clientY, origPan: { x: 0, y: 0 }, ids: [primarySelected.id], orig: new Map(), raf: 0, moved: false };
-  }, [primarySelected]);
+  const beginRotate = useCallback(
+    (e: React.PointerEvent) => {
+      if (primarySelected == null || primarySelected.locked) return;
+      e.stopPropagation();
+      e.preventDefault();
+      const stage = stageRef.current;
+      if (stage) stage.setPointerCapture(e.pointerId);
+      gestureRef.current = {
+        kind: "rotate",
+        startX: e.clientX,
+        startY: e.clientY,
+        origPan: { x: 0, y: 0 },
+        ids: [primarySelected.id],
+        orig: new Map(),
+        raf: 0,
+        moved: false,
+      };
+    },
+    [primarySelected],
+  );
 
   const fitView = useCallback(() => {
     const stage = stageRef.current;
     if (!stage) return;
     const rect = stage.getBoundingClientRect();
-    const z = Math.min((rect.width - 120) / artboard.width, (rect.height - 120) / artboard.height, 1.5);
+    const z = Math.min(
+      (rect.width - 120) / artboard.width,
+      (rect.height - 120) / artboard.height,
+      1.5,
+    );
     const clamped = Math.min(1.5, Math.max(0.2, z));
     setZoom(clamped);
-    setPan({ x: (rect.width - artboard.width * clamped) / 2, y: (rect.height - artboard.height * clamped) / 2 });
+    setPan({
+      x: (rect.width - artboard.width * clamped) / 2,
+      y: (rect.height - artboard.height * clamped) / 2,
+    });
   }, [artboard]);
 
   useEffect(() => {
@@ -479,20 +665,10 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fpsFrames = useRef<number[]>([]);
-  function fpsTick() {
-    const now = performance.now();
-    const arr = fpsFrames.current;
-    arr.push(now);
-    while (arr.length > 0 && now - arr[0] > 500) arr.shift();
-    if (fpsRef.current && arr.length > 4) {
-      const span = (arr[arr.length - 1] - arr[0]) / 1000;
-      const fps = span > 0 ? Math.round((arr.length - 1) / span) : 0;
-      fpsRef.current.textContent = `${fps}fps`;
-    }
-  }
-
-  const penPath = penPoints && penPoints.length > 0 ? pointsToPath(penPreview ? [...penPoints, penPreview] : penPoints) : null;
+  const penPath =
+    penPoints && penPoints.length > 0
+      ? pointsToPath(penPreview ? [...penPoints, penPreview] : penPoints)
+      : null;
 
   return (
     <div
@@ -509,7 +685,11 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
     >
       <div ref={surfaceRef} className="stage-surface">
         <div className="artboard" style={{ width: artboard.width, height: artboard.height }}>
-          <svg width={artboard.width} height={artboard.height} viewBox={`0 0 ${artboard.width} ${artboard.height}`}>
+          <svg
+            width={artboard.width}
+            height={artboard.height}
+            viewBox={`0 0 ${artboard.width} ${artboard.height}`}
+          >
             {layers.map((l) => (
               <LayerNode
                 key={l.id}
@@ -523,15 +703,47 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
             {draft && draft.w > 1 && draft.h > 1 && (
               <g style={{ transform: `translate3d(${draft.x}px, ${draft.y}px, 0)` }}>
                 {draft.tool === "ellipse" ? (
-                  <ellipse cx={draft.w / 2} cy={draft.h / 2} rx={draft.w / 2} ry={draft.h / 2} fill="rgba(156,98,255,0.3)" stroke="#b184ff" strokeDasharray="5 4" />
+                  <ellipse
+                    cx={draft.w / 2}
+                    cy={draft.h / 2}
+                    rx={draft.w / 2}
+                    ry={draft.h / 2}
+                    fill="rgba(156,98,255,0.3)"
+                    stroke="#b184ff"
+                    strokeDasharray="5 4"
+                  />
                 ) : draft.tool === "line" ? (
-                  <line x1={0} y1={0} x2={draft.w} y2={draft.h} stroke="#b184ff" strokeWidth={3} strokeLinecap="round" />
+                  <line
+                    x1={0}
+                    y1={0}
+                    x2={draft.w}
+                    y2={draft.h}
+                    stroke="#b184ff"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                  />
                 ) : (
-                  <rect width={draft.w} height={draft.h} rx={8} fill="rgba(156,98,255,0.3)" stroke="#b184ff" strokeDasharray="5 4" />
+                  <rect
+                    width={draft.w}
+                    height={draft.h}
+                    rx={8}
+                    fill="rgba(156,98,255,0.3)"
+                    stroke="#b184ff"
+                    strokeDasharray="5 4"
+                  />
                 )}
               </g>
             )}
-            {penPath && <path d={penPath} fill="none" stroke="#b184ff" strokeWidth={2.5} strokeLinecap="round" strokeDasharray={penPreview ? "none" : undefined} />}
+            {penPath && (
+              <path
+                d={penPath}
+                fill="none"
+                stroke="#b184ff"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+                strokeDasharray={penPreview ? "none" : undefined}
+              />
+            )}
             {penPoints?.map((p, i) => (
               <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#d6bdff" stroke="#8858c5" />
             ))}
@@ -575,13 +787,27 @@ export function Canvas({ layers, selectedIds, tool, artboard, overrides, onSelec
         <i />
         <span>{layers.length} layers</span>
         <span className="warn">{tool !== "select" ? `● ${tool}` : ""}</span>
-        <span ref={fpsRef} title="Frame rate during drag">—fps</span>
+        <span ref={fpsRef} title="Frame rate during drag">
+          —fps
+        </span>
       </div>
       <div className="zoom-controls" role="toolbar" aria-label="Zoom">
-        <button onClick={() => setZoom((z) => Math.max(0.2, +(z / 1.2).toFixed(2)))} aria-label="Zoom out"><Minus size={13} /></button>
+        <button
+          onClick={() => setZoom((z) => Math.max(0.2, +(z / 1.2).toFixed(2)))}
+          aria-label="Zoom out"
+        >
+          <Minus size={13} />
+        </button>
         <span className="zoom-label">{Math.round(zoom * 100)}%</span>
-        <button onClick={() => setZoom((z) => Math.min(4, +(z * 1.2).toFixed(2)))} aria-label="Zoom in"><Plus size={13} /></button>
-        <button onClick={fitView} aria-label="Fit to view"><Maximize size={13} /></button>
+        <button
+          onClick={() => setZoom((z) => Math.min(4, +(z * 1.2).toFixed(2)))}
+          aria-label="Zoom in"
+        >
+          <Plus size={13} />
+        </button>
+        <button onClick={fitView} aria-label="Fit to view">
+          <Maximize size={13} />
+        </button>
       </div>
     </div>
   );

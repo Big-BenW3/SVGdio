@@ -63,7 +63,13 @@ export function migrate(raw: unknown): WorkspaceSnapshot {
     width: typeof a?.width === "number" ? Math.min(2000, Math.max(100, a.width)) : 800,
     height: typeof a?.height === "number" ? Math.min(2000, Math.max(100, a.height)) : 600,
   };
-  return { version: STORAGE_VERSION, savedAt: new Date().toISOString(), layers, timeline, artboard };
+  return {
+    version: STORAGE_VERSION,
+    savedAt: new Date().toISOString(),
+    layers,
+    timeline,
+    artboard,
+  };
 }
 
 export function loadSnapshot(): WorkspaceSnapshot {
@@ -78,7 +84,10 @@ export function loadSnapshot(): WorkspaceSnapshot {
 
 export function saveSnapshot(snap: WorkspaceSnapshot): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...snap, version: STORAGE_VERSION, savedAt: new Date().toISOString() }));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...snap, version: STORAGE_VERSION, savedAt: new Date().toISOString() }),
+    );
   } catch {
     // Storage full or unavailable — workspace stays in memory.
   }

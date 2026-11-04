@@ -14,13 +14,81 @@ export interface Template {
 
 function heroLayers(): Layer[] {
   return [
-    createLayer("rect", { name: "Backdrop", x: 90, y: 70, width: 620, height: 460, cornerRadius: 28, fill: "#17131e", stroke: "#2c2340", strokeWidth: 1.5 }),
-    createLayer("ellipse", { name: "Glow", x: 440, y: 110, width: 220, height: 220, fill: "rgba(156,98,255,0.35)", stroke: "none" }),
-    createLayer("ellipse", { name: "Orbit ring", x: 180, y: 170, width: 260, height: 260, fill: "none", stroke: "#b184ff", strokeWidth: 2, opacity: 0.7 }),
-    createLayer("rect", { name: "Card", x: 250, y: 220, width: 300, height: 160, cornerRadius: 16, fill: "#221b2c", stroke: "#9c62ff", strokeWidth: 1.5 }),
-    createLayer("text", { name: "Headline", x: 280, y: 258, width: 240, height: 40, text: "Ship it", fontSize: 40, fill: "#f6f3fa" }),
-    createLayer("text", { name: "Subhead", x: 280, y: 312, width: 240, height: 30, text: "SVG + CSS, no runtime", fontSize: 16, fill: "#a79eaf" }),
-    createLayer("line", { name: "Underline", x: 280, y: 352, width: 120, height: 1, stroke: "#9c62ff", strokeWidth: 4, points: [{ x: 0, y: 0 }, { x: 120, y: 0 }] }),
+    createLayer("rect", {
+      name: "Backdrop",
+      x: 90,
+      y: 70,
+      width: 620,
+      height: 460,
+      cornerRadius: 28,
+      fill: "#17131e",
+      stroke: "#2c2340",
+      strokeWidth: 1.5,
+    }),
+    createLayer("ellipse", {
+      name: "Glow",
+      x: 440,
+      y: 110,
+      width: 220,
+      height: 220,
+      fill: "rgba(156,98,255,0.35)",
+      stroke: "none",
+    }),
+    createLayer("ellipse", {
+      name: "Orbit ring",
+      x: 180,
+      y: 170,
+      width: 260,
+      height: 260,
+      fill: "none",
+      stroke: "#b184ff",
+      strokeWidth: 2,
+      opacity: 0.7,
+    }),
+    createLayer("rect", {
+      name: "Card",
+      x: 250,
+      y: 220,
+      width: 300,
+      height: 160,
+      cornerRadius: 16,
+      fill: "#221b2c",
+      stroke: "#9c62ff",
+      strokeWidth: 1.5,
+    }),
+    createLayer("text", {
+      name: "Headline",
+      x: 280,
+      y: 258,
+      width: 240,
+      height: 40,
+      text: "Ship it",
+      fontSize: 40,
+      fill: "#f6f3fa",
+    }),
+    createLayer("text", {
+      name: "Subhead",
+      x: 280,
+      y: 312,
+      width: 240,
+      height: 30,
+      text: "SVG + CSS, no runtime",
+      fontSize: 16,
+      fill: "#a79eaf",
+    }),
+    createLayer("line", {
+      name: "Underline",
+      x: 280,
+      y: 352,
+      width: 120,
+      height: 1,
+      stroke: "#9c62ff",
+      strokeWidth: 4,
+      points: [
+        { x: 0, y: 0 },
+        { x: 120, y: 0 },
+      ],
+    }),
   ];
 }
 
@@ -38,27 +106,122 @@ function chartLayers(): Layer[] {
     }),
   );
   return [
-    createLayer("rect", { name: "Panel", x: 80, y: 80, width: 640, height: 440, cornerRadius: 20, fill: "#14111a", stroke: "#2c2340", strokeWidth: 1.5 }),
-    createLayer("text", { name: "Title", x: 120, y: 112, width: 300, height: 30, text: "Weekly throughput", fontSize: 22, fill: "#f6f3fa" }),
-    createLayer("line", { name: "Baseline", x: 120, y: 460, width: 560, height: 1, stroke: "#3a3049", strokeWidth: 2, points: [{ x: 0, y: 0 }, { x: 560, y: 0 }] }),
+    createLayer("rect", {
+      name: "Panel",
+      x: 80,
+      y: 80,
+      width: 640,
+      height: 440,
+      cornerRadius: 20,
+      fill: "#14111a",
+      stroke: "#2c2340",
+      strokeWidth: 1.5,
+    }),
+    createLayer("text", {
+      name: "Title",
+      x: 120,
+      y: 112,
+      width: 300,
+      height: 30,
+      text: "Weekly throughput",
+      fontSize: 22,
+      fill: "#f6f3fa",
+    }),
+    createLayer("line", {
+      name: "Baseline",
+      x: 120,
+      y: 460,
+      width: 560,
+      height: 1,
+      stroke: "#3a3049",
+      strokeWidth: 2,
+      points: [
+        { x: 0, y: 0 },
+        { x: 560, y: 0 },
+      ],
+    }),
     ...bars,
   ];
 }
 
 function badgeLayers(): Layer[] {
   return [
-    createLayer("ellipse", { name: "Badge", x: 275, y: 150, width: 250, height: 250, fill: "#1d1826", stroke: "#9c62ff", strokeWidth: 3 }),
-    createLayer("ellipse", { name: "Inner ring", x: 305, y: 180, width: 190, height: 190, fill: "none", stroke: "#b184ff", strokeWidth: 1.5, opacity: 0.6 }),
-    createLayer("text", { name: "Mark", x: 355, y: 235, width: 90, height: 70, text: "◈", fontSize: 64, fill: "#b184ff" }),
-    createLayer("text", { name: "Label", x: 330, y: 330, width: 140, height: 24, text: "SVGdio  v1.0", fontSize: 18, fill: "#a79eaf" }),
+    createLayer("ellipse", {
+      name: "Badge",
+      x: 275,
+      y: 150,
+      width: 250,
+      height: 250,
+      fill: "#1d1826",
+      stroke: "#9c62ff",
+      strokeWidth: 3,
+    }),
+    createLayer("ellipse", {
+      name: "Inner ring",
+      x: 305,
+      y: 180,
+      width: 190,
+      height: 190,
+      fill: "none",
+      stroke: "#b184ff",
+      strokeWidth: 1.5,
+      opacity: 0.6,
+    }),
+    createLayer("text", {
+      name: "Mark",
+      x: 355,
+      y: 235,
+      width: 90,
+      height: 70,
+      text: "◈",
+      fontSize: 64,
+      fill: "#b184ff",
+    }),
+    createLayer("text", {
+      name: "Label",
+      x: 330,
+      y: 330,
+      width: 140,
+      height: 24,
+      text: "SVGdio  v1.0",
+      fontSize: 18,
+      fill: "#a79eaf",
+    }),
   ];
 }
 
 function motionLayers(): Layer[] {
   return [
-    createLayer("rect", { name: "Stage", x: 90, y: 120, width: 620, height: 360, cornerRadius: 20, fill: "#14111a", stroke: "#2c2340", strokeWidth: 1.5 }),
-    createLayer("ellipse", { name: "Ball", x: 150, y: 260, width: 80, height: 80, fill: "#9c62ff", stroke: "none" }),
-    createLayer("rect", { name: "Floor", x: 150, y: 360, width: 500, height: 6, cornerRadius: 3, fill: "#3a3049", stroke: "none" }),
+    createLayer("rect", {
+      name: "Stage",
+      x: 90,
+      y: 120,
+      width: 620,
+      height: 360,
+      cornerRadius: 20,
+      fill: "#14111a",
+      stroke: "#2c2340",
+      strokeWidth: 1.5,
+    }),
+    createLayer("ellipse", {
+      name: "Ball",
+      x: 150,
+      y: 260,
+      width: 80,
+      height: 80,
+      fill: "#9c62ff",
+      stroke: "none",
+    }),
+    createLayer("rect", {
+      name: "Floor",
+      x: 150,
+      y: 360,
+      width: 500,
+      height: 6,
+      cornerRadius: 3,
+      fill: "#3a3049",
+      stroke: "none",
+    }),
   ];
 }
 
@@ -66,8 +229,25 @@ function motionTimeline(ballId: string): Timeline {
   const t = emptyTimeline();
   t.duration = 2;
   t.tracks = [
-    { id: "trk-x", layerId: ballId, property: "x", keyframes: [{ id: "k1", time: 0, value: 150, easing: "ease-in-out" }, { id: "k2", time: 2, value: 570, easing: "ease-in-out" }] },
-    { id: "trk-y", layerId: ballId, property: "y", keyframes: [{ id: "k3", time: 0, value: 260, easing: "ease-out" }, { id: "k4", time: 1, value: 180, easing: "ease-in-out" }, { id: "k5", time: 2, value: 260, easing: "ease-out" }] },
+    {
+      id: "trk-x",
+      layerId: ballId,
+      property: "x",
+      keyframes: [
+        { id: "k1", time: 0, value: 150, easing: "ease-in-out" },
+        { id: "k2", time: 2, value: 570, easing: "ease-in-out" },
+      ],
+    },
+    {
+      id: "trk-y",
+      layerId: ballId,
+      property: "y",
+      keyframes: [
+        { id: "k3", time: 0, value: 260, easing: "ease-out" },
+        { id: "k4", time: 1, value: 180, easing: "ease-in-out" },
+        { id: "k5", time: 2, value: 260, easing: "ease-out" },
+      ],
+    },
   ];
   return t;
 }
@@ -80,9 +260,27 @@ const PREVIEWS: Record<string, string> = {
 };
 
 export const TEMPLATES: Template[] = [
-  { id: "hero", name: "Hero card", description: "Backdrop, orbit, card + type", layers: heroLayers, preview: PREVIEWS.hero },
-  { id: "chart", name: "Bar chart", description: "Panel with 7 bars", layers: chartLayers, preview: PREVIEWS.chart },
-  { id: "badge", name: "Badge", description: "Mark + rings + label", layers: badgeLayers, preview: PREVIEWS.badge },
+  {
+    id: "hero",
+    name: "Hero card",
+    description: "Backdrop, orbit, card + type",
+    layers: heroLayers,
+    preview: PREVIEWS.hero,
+  },
+  {
+    id: "chart",
+    name: "Bar chart",
+    description: "Panel with 7 bars",
+    layers: chartLayers,
+    preview: PREVIEWS.chart,
+  },
+  {
+    id: "badge",
+    name: "Badge",
+    description: "Mark + rings + label",
+    layers: badgeLayers,
+    preview: PREVIEWS.badge,
+  },
   {
     id: "motion",
     name: "Bouncing ball",

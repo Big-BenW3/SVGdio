@@ -56,7 +56,11 @@ export function round(n: number, precision: number = CANVAS_DEFAULTS.precision):
 }
 
 export function escapeXml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function parseColor(c: string): [number, number, number] | null {
@@ -64,8 +68,18 @@ function parseColor(c: string): [number, number, number] | null {
   const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/.exec(t);
   if (hex) {
     const h = hex[1];
-    const full = h.length === 3 ? h.split("").map((ch) => ch + ch).join("") : h;
-    return [parseInt(full.slice(0, 2), 16), parseInt(full.slice(2, 4), 16), parseInt(full.slice(4, 6), 16)];
+    const full =
+      h.length === 3
+        ? h
+            .split("")
+            .map((ch) => ch + ch)
+            .join("")
+        : h;
+    return [
+      parseInt(full.slice(0, 2), 16),
+      parseInt(full.slice(2, 4), 16),
+      parseInt(full.slice(4, 6), 16),
+    ];
   }
   const rgb = /^rgba?\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)/.exec(t);
   if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
@@ -119,8 +133,10 @@ export function valueAt(track: TimelineTrack, time: number): number | string | n
     if (time >= a.time && time <= b.time) {
       const span = Math.max(1e-6, b.time - a.time);
       const t = easeScalar(a.easing, (time - a.time) / span);
-      if (typeof a.value === "number" && typeof b.value === "number") return lerp(a.value, b.value, t);
-      if (typeof a.value === "string" && typeof b.value === "string") return mixColor(a.value, b.value, t);
+      if (typeof a.value === "number" && typeof b.value === "number")
+        return lerp(a.value, b.value, t);
+      if (typeof a.value === "string" && typeof b.value === "string")
+        return mixColor(a.value, b.value, t);
       return t < 0.5 ? a.value : b.value;
     }
   }
@@ -162,21 +178,34 @@ function layerShape(layer: Layer): string {
 function layerTransform(layer: Layer): string {
   const parts: string[] = [];
   if (layer.x !== 0 || layer.y !== 0) parts.push(`translate(${round(layer.x)} ${round(layer.y)})`);
-  if (layer.rotation !== 0) parts.push(`rotate(${round(layer.rotation)} ${round(layer.width / 2)} ${round(layer.height / 2)})`);
+  if (layer.rotation !== 0)
+    parts.push(
+      `rotate(${round(layer.rotation)} ${round(layer.width / 2)} ${round(layer.height / 2)})`,
+    );
   return parts.length > 0 ? ` transform="${parts.join(" ")}"` : "";
 }
 
 /** Standalone .svg file content. Hidden layers are skipped; locked layers are included. */
-export function layersToSVG(layers: Layer[], width: number = CANVAS_DEFAULTS.width, height: number = CANVAS_DEFAULTS.height): string {
+export function layersToSVG(
+  layers: Layer[],
+  width: number = CANVAS_DEFAULTS.width,
+  height: number = CANVAS_DEFAULTS.height,
+): string {
   const visible = layers.filter((l) => l.visible);
   const body = visible
-    .map((l) => `  <g id="${escapeXml(slug(l.name))}"${layerTransform(l)}>\n    ${layerShape(l)}\n  </g>`)
+    .map(
+      (l) =>
+        `  <g id="${escapeXml(slug(l.name))}"${layerTransform(l)}>\n    ${layerShape(l)}\n  </g>`,
+    )
     .join("\n");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">\n${body}\n</svg>\n`;
 }
 
 function slug(name: string): string {
-  const s = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const s = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
   return s === "" ? "layer" : s.slice(0, 48);
 }
 
@@ -201,7 +230,10 @@ function cssValueFor(property: AnimatableProperty, value: number | string, layer
  * Compile the timeline to CSS. One @keyframes block per animated layer;
  * x/y/rotation merge into a single `transform` per keyframe stop.
  */
-export function timelineToCSS(timeline: Timeline, layers: Layer[]): { keyframesCSS: string; usageCSS: string } {
+export function timelineToCSS(
+  timeline: Timeline,
+  layers: Layer[],
+): { keyframesCSS: string; usageCSS: string } {
   const byId = new Map(layers.map((l) => [l.id, l]));
   const byLayer = new Map<string, TimelineTrack[]>();
   for (const t of timeline.tracks) {
@@ -233,7 +265,9 @@ export function timelineToCSS(timeline: Timeline, layers: Layer[]): { keyframesC
       for (const t of active) {
         const v = valueAt(t, stop);
         if (v == null) continue;
-        const kf = [...t.keyframes].sort((a, b) => a.time - b.time).find((k) => k.time >= stop) ?? t.keyframes[0];
+        const kf =
+          [...t.keyframes].sort((a, b) => a.time - b.time).find((k) => k.time >= stop) ??
+          t.keyframes[0];
         easing = EASING_CSS[kf.easing];
         if (t.property === "x" || t.property === "y" || t.property === "rotation") {
           transforms.push(cssValueFor(t.property, v, layer));
@@ -255,6 +289,7 @@ export function timelineToCSS(timeline: Timeline, layers: Layer[]): { keyframesC
 /** Full CSS export: keyframes + usage, with a header comment. */
 export function timelineToFullCSS(timeline: Timeline, layers: Layer[]): string {
   const { keyframesCSS, usageCSS } = timelineToCSS(timeline, layers);
-  if (!keyframesCSS) return `/* SVGdio: no animated tracks yet. Add a track and two keyframes. */\n`;
+  if (!keyframesCSS)
+    return `/* SVGdio: no animated tracks yet. Add a track and two keyframes. */\n`;
   return `/* Exported from SVGdio — apply to the matching SVG element ids. */\n${keyframesCSS}\n\n${usageCSS}\n`;
 }
