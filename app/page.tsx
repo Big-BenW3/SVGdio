@@ -28,9 +28,8 @@ const RAIL_TOOLS: { id: Tool; icon: React.ReactNode; label: string; kbd: string 
 ];
 
 export default function StudioPage() {
-  const [snap, setSnap] = useState<WorkspaceSnapshot>(() =>
-    typeof window === "undefined" ? defaultSnapshot() : loadSnapshot(),
-  );
+  const [snap, setSnap] = useState<WorkspaceSnapshot>(defaultSnapshot);
+  const loadedRef = useRef(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [tool, setTool] = useState<Tool>("select");
   const [overrides, setOverrides] = useState<Map<string, Partial<Layer>>>(new Map());
@@ -48,8 +47,15 @@ export default function StudioPage() {
     toastTimer.current = window.setTimeout(() => setToast(null), 2600);
   }, []);
 
+  /* load stored workspace after mount (keeps SSR + first paint identical) */
+  useEffect(() => {
+    setSnap(loadSnapshot());
+    loadedRef.current = true;
+  }, []);
+
   /* persist (debounced) */
   useEffect(() => {
+    if (!loadedRef.current) return;
     const t = window.setTimeout(() => {
       saveSnapshot(snap);
       setSavedTick((v) => v + 1);

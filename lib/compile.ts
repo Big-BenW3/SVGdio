@@ -50,7 +50,7 @@ export function emptyTimeline(): Timeline {
 
 /* ---------- numbers + colors ---------- */
 
-export function round(n: number, precision = CANVAS_DEFAULTS.precision): number {
+export function round(n: number, precision: number = CANVAS_DEFAULTS.precision): number {
   const f = 10 ** precision;
   return Math.round(n * f) / f;
 }
@@ -167,7 +167,7 @@ function layerTransform(layer: Layer): string {
 }
 
 /** Standalone .svg file content. Hidden layers are skipped; locked layers are included. */
-export function layersToSVG(layers: Layer[], width = CANVAS_DEFAULTS.width, height = CANVAS_DEFAULTS.height): string {
+export function layersToSVG(layers: Layer[], width: number = CANVAS_DEFAULTS.width, height: number = CANVAS_DEFAULTS.height): string {
   const visible = layers.filter((l) => l.visible);
   const body = visible
     .map((l) => `  <g id="${escapeXml(slug(l.name))}"${layerTransform(l)}>\n    ${layerShape(l)}\n  </g>`)

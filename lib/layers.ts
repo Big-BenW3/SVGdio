@@ -302,8 +302,8 @@ function elementToLayer(el: Element, index: number): Layer | null {
 export function parseSVGToLayers(svgText: string): ImportResult {
   const rejected: string[] = [];
   const layers: Layer[] = [];
-  let width = CANVAS_DEFAULTS.width;
-  let height = CANVAS_DEFAULTS.height;
+  let width: number = CANVAS_DEFAULTS.width;
+  let height: number = CANVAS_DEFAULTS.height;
   try {
     const doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
     if (doc.querySelector("parsererror")) {

@@ -221,3 +221,4 @@ export function templateById(id: string): Template | undefined {
 }
 
 export { instantiateTemplate };
+export type { Template };
