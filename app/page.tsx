@@ -11,6 +11,7 @@ import { LayerList } from "@/components/layers";
 import { Inspector } from "@/components/inspector";
 import { TimelineDock } from "@/components/timeline";
 import { ExportModal, ImportModal, TemplatesModal, instantiateTemplate, type Template } from "@/components/modals";
+import { BrandMark } from "@/components/brand-mark";
 import { createLayer, duplicateLayer, fixture100, type Layer, type Tool } from "@/lib/layers";
 import type { Timeline } from "@/lib/compile";
 import { defaultSnapshot, importProjectJSON, loadSnapshot, saveSnapshot, type WorkspaceSnapshot } from "@/lib/storage";
@@ -170,7 +171,7 @@ export default function StudioPage() {
     <div className="studio">
       <header className="studio-topbar">
         <span className="studio-brand">
-          <span className="studio-mark">S</span>
+          <BrandMark className="studio-mark" />
           <span className="studio-word">SVG<em>dio</em></span>
         </span>
         <span className="topbar-sep" />

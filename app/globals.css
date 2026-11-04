@@ -59,12 +59,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 30;
 }
 .studio-brand { display: inline-flex; align-items: center; gap: 9px; }
-.studio-mark {
-  width: 28px; height: 28px; border-radius: 8px; flex: none;
-  background: linear-gradient(135deg, #b58aff, #7435e3);
-  display: grid; place-items: center;
-  color: #fff; font-size: 14px; font-weight: 800; letter-spacing: -0.05em;
-}
+.studio-mark { width: 28px; height: 28px; flex: none; }
 .studio-word { font-size: 15px; font-weight: 800; letter-spacing: -0.06em; }
 .studio-word em { font-style: normal; color: var(--accent-bright); }
 .topbar-sep { height: 22px; width: 1px; background: var(--line); }
