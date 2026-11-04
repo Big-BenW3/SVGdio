@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# build
+dist/
+*.tsbuildinfo
+
+# env
+.env*.local
+
+# os / editor
+.DS_Store
+*.pem
+.vscode/*
+!.vscode/extensions.json
+
+# screenshots are committed intentionally (see screenshots/)
