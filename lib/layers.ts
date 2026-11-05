@@ -42,11 +42,11 @@ export function uid(prefix = "layer"): string {
 }
 
 const TYPE_DEFAULTS: Record<LayerType, Partial<Layer>> = {
-  rect: { fill: "#9c62ff", stroke: "none", strokeWidth: 0, cornerRadius: 8 },
-  ellipse: { fill: "#b184ff", stroke: "none", strokeWidth: 0, cornerRadius: 0 },
-  line: { fill: "none", stroke: "#e6dcf0", strokeWidth: 3, cornerRadius: 0 },
-  text: { fill: "#f6f3fa", stroke: "none", strokeWidth: 0, cornerRadius: 0 },
-  path: { fill: "rgba(156,98,255,0.25)", stroke: "#b184ff", strokeWidth: 2.5, cornerRadius: 0 },
+  rect: { fill: "#ffea00", stroke: "none", strokeWidth: 0, cornerRadius: 8 },
+  ellipse: { fill: "#ffea00", stroke: "none", strokeWidth: 0, cornerRadius: 0 },
+  line: { fill: "none", stroke: "#ffea00", strokeWidth: 3, cornerRadius: 0 },
+  text: { fill: "#ffffff", stroke: "none", strokeWidth: 0, cornerRadius: 0 },
+  path: { fill: "rgba(255,234,0,0.25)", stroke: "#ffea00", strokeWidth: 2.5, cornerRadius: 0 },
 };
 
 const TYPE_LABEL: Record<LayerType, string> = {
@@ -372,14 +372,14 @@ export function parseSVGToLayers(svgText: string): ImportResult {
 /* ---------- 100-layer stress fixture ---------- */
 
 const FIXTURE_FILLS = [
-  "#9c62ff",
-  "#b184ff",
-  "#6d34e8",
-  "#99e1bf",
-  "#f0c987",
-  "#ff7ad9",
-  "#7ad9ff",
-  "#e6dcf0",
+  "#ffea00",
+  "#ffea00",
+  "#ccbb00",
+  "#22c55e",
+  "#fbbf24",
+  "#ffea00",
+  "#22c55e",
+  "#ffffff",
 ];
 
 export function fixture100(): Layer[] {

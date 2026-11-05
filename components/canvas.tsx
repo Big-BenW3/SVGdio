@@ -61,17 +61,17 @@ const LayerNode = memo(function LayerNode({
         <ShapeShape l={l} />
       </g>
       {selected && (
-        <rect
-          x={-4}
-          y={-4}
-          width={Math.max(8, l.width + 8)}
-          height={Math.max(8, (l.type === "line" ? 8 : l.height) + 8)}
-          fill="none"
-          stroke="#b184ff"
-          strokeWidth={1.5 / 1}
-          strokeDasharray="4 3"
-          pointerEvents="none"
-        />
+          <rect
+            x={-4}
+            y={-4}
+            width={Math.max(8, l.width + 8)}
+            height={Math.max(8, (l.type === "line" ? 8 : l.height) + 8)}
+            fill="none"
+            stroke="#ffea00"
+            strokeWidth={1.5 / 1}
+            strokeDasharray="4 3"
+            pointerEvents="none"
+          />
       )}
     </g>
   );
@@ -708,8 +708,8 @@ export function Canvas({
                     cy={draft.h / 2}
                     rx={draft.w / 2}
                     ry={draft.h / 2}
-                    fill="rgba(156,98,255,0.3)"
-                    stroke="#b184ff"
+                    fill="rgba(255,234,0,0.3)"
+                    stroke="#ffea00"
                     strokeDasharray="5 4"
                   />
                 ) : draft.tool === "line" ? (
@@ -718,7 +718,7 @@ export function Canvas({
                     y1={0}
                     x2={draft.w}
                     y2={draft.h}
-                    stroke="#b184ff"
+                    stroke="#ffea00"
                     strokeWidth={3}
                     strokeLinecap="round"
                   />
@@ -727,8 +727,8 @@ export function Canvas({
                     width={draft.w}
                     height={draft.h}
                     rx={8}
-                    fill="rgba(156,98,255,0.3)"
-                    stroke="#b184ff"
+                    fill="rgba(255,234,0,0.3)"
+                    stroke="#ffea00"
                     strokeDasharray="5 4"
                   />
                 )}
@@ -738,14 +738,14 @@ export function Canvas({
               <path
                 d={penPath}
                 fill="none"
-                stroke="#b184ff"
+                stroke="#ffea00"
                 strokeWidth={2.5}
                 strokeLinecap="round"
                 strokeDasharray={penPreview ? "none" : undefined}
               />
             )}
             {penPoints?.map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#d6bdff" stroke="#8858c5" />
+              <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#e6d400" stroke="#ccbb00" />
             ))}
           </svg>
         </div>

@@ -21,8 +21,8 @@ function heroLayers(): Layer[] {
       width: 620,
       height: 460,
       cornerRadius: 28,
-      fill: "#17131e",
-      stroke: "#2c2340",
+      fill: "#111111",
+      stroke: "#333333",
       strokeWidth: 1.5,
     }),
     createLayer("ellipse", {
@@ -31,7 +31,7 @@ function heroLayers(): Layer[] {
       y: 110,
       width: 220,
       height: 220,
-      fill: "rgba(156,98,255,0.35)",
+      fill: "rgba(255,234,0,0.35)",
       stroke: "none",
     }),
     createLayer("ellipse", {
@@ -41,7 +41,7 @@ function heroLayers(): Layer[] {
       width: 260,
       height: 260,
       fill: "none",
-      stroke: "#b184ff",
+      stroke: "#ffea00",
       strokeWidth: 2,
       opacity: 0.7,
     }),
@@ -52,8 +52,8 @@ function heroLayers(): Layer[] {
       width: 300,
       height: 160,
       cornerRadius: 16,
-      fill: "#221b2c",
-      stroke: "#9c62ff",
+      fill: "#1a1a1a",
+      stroke: "#ffea00",
       strokeWidth: 1.5,
     }),
     createLayer("text", {
@@ -64,7 +64,7 @@ function heroLayers(): Layer[] {
       height: 40,
       text: "Ship it",
       fontSize: 40,
-      fill: "#f6f3fa",
+      fill: "#ffffff",
     }),
     createLayer("text", {
       name: "Subhead",
@@ -74,7 +74,7 @@ function heroLayers(): Layer[] {
       height: 30,
       text: "SVG + CSS, no runtime",
       fontSize: 16,
-      fill: "#a79eaf",
+      fill: "#666666",
     }),
     createLayer("line", {
       name: "Underline",
@@ -82,7 +82,7 @@ function heroLayers(): Layer[] {
       y: 352,
       width: 120,
       height: 1,
-      stroke: "#9c62ff",
+      stroke: "#ffea00",
       strokeWidth: 4,
       points: [
         { x: 0, y: 0 },
@@ -101,7 +101,7 @@ function chartLayers(): Layer[] {
       width: 48,
       height: h,
       cornerRadius: 8,
-      fill: i % 2 === 0 ? "#9c62ff" : "#6d34e8",
+      fill: i % 2 === 0 ? "#ffea00" : "#ccbb00",
       stroke: "none",
     }),
   );
@@ -113,8 +113,8 @@ function chartLayers(): Layer[] {
       width: 640,
       height: 440,
       cornerRadius: 20,
-      fill: "#14111a",
-      stroke: "#2c2340",
+      fill: "#111111",
+      stroke: "#333333",
       strokeWidth: 1.5,
     }),
     createLayer("text", {
@@ -125,7 +125,7 @@ function chartLayers(): Layer[] {
       height: 30,
       text: "Weekly throughput",
       fontSize: 22,
-      fill: "#f6f3fa",
+      fill: "#ffffff",
     }),
     createLayer("line", {
       name: "Baseline",
@@ -133,7 +133,7 @@ function chartLayers(): Layer[] {
       y: 460,
       width: 560,
       height: 1,
-      stroke: "#3a3049",
+      stroke: "#333333",
       strokeWidth: 2,
       points: [
         { x: 0, y: 0 },
@@ -152,8 +152,8 @@ function badgeLayers(): Layer[] {
       y: 150,
       width: 250,
       height: 250,
-      fill: "#1d1826",
-      stroke: "#9c62ff",
+      fill: "#111111",
+      stroke: "#ffea00",
       strokeWidth: 3,
     }),
     createLayer("ellipse", {
@@ -163,7 +163,7 @@ function badgeLayers(): Layer[] {
       width: 190,
       height: 190,
       fill: "none",
-      stroke: "#b184ff",
+      stroke: "#ffea00",
       strokeWidth: 1.5,
       opacity: 0.6,
     }),
@@ -175,7 +175,7 @@ function badgeLayers(): Layer[] {
       height: 70,
       text: "◈",
       fontSize: 64,
-      fill: "#b184ff",
+      fill: "#ffea00",
     }),
     createLayer("text", {
       name: "Label",
@@ -185,7 +185,7 @@ function badgeLayers(): Layer[] {
       height: 24,
       text: "SVGdio  v1.0",
       fontSize: 18,
-      fill: "#a79eaf",
+      fill: "#666666",
     }),
   ];
 }
@@ -199,8 +199,8 @@ function motionLayers(): Layer[] {
       width: 620,
       height: 360,
       cornerRadius: 20,
-      fill: "#14111a",
-      stroke: "#2c2340",
+      fill: "#111111",
+      stroke: "#333333",
       strokeWidth: 1.5,
     }),
     createLayer("ellipse", {
@@ -209,7 +209,7 @@ function motionLayers(): Layer[] {
       y: 260,
       width: 80,
       height: 80,
-      fill: "#9c62ff",
+      fill: "#ffea00",
       stroke: "none",
     }),
     createLayer("rect", {
@@ -219,7 +219,7 @@ function motionLayers(): Layer[] {
       width: 500,
       height: 6,
       cornerRadius: 3,
-      fill: "#3a3049",
+      fill: "#333333",
       stroke: "none",
     }),
   ];
@@ -253,10 +253,10 @@ function motionTimeline(ballId: string): Timeline {
 }
 
 const PREVIEWS: Record<string, string> = {
-  hero: `<svg viewBox="0 0 200 86"><rect x="30" y="8" width="140" height="70" rx="10" fill="#17131e" stroke="#2c2340"/><circle cx="140" cy="30" r="16" fill="rgba(156,98,255,0.4)"/><rect x="62" y="30" width="76" height="34" rx="6" fill="#221b2c" stroke="#9c62ff"/><rect x="70" y="38" width="40" height="6" rx="3" fill="#f6f3fa"/><rect x="70" y="48" width="60" height="4" rx="2" fill="#a79eaf"/></svg>`,
-  chart: `<svg viewBox="0 0 200 86"><rect x="30" y="8" width="140" height="70" rx="10" fill="#14111a" stroke="#2c2340"/><rect x="52" y="44" width="14" height="24" rx="3" fill="#9c62ff"/><rect x="72" y="34" width="14" height="34" rx="3" fill="#6d34e8"/><rect x="92" y="40" width="14" height="28" rx="3" fill="#9c62ff"/><rect x="112" y="28" width="14" height="40" rx="3" fill="#6d34e8"/><rect x="132" y="36" width="14" height="32" rx="3" fill="#9c62ff"/></svg>`,
-  badge: `<svg viewBox="0 0 200 86"><circle cx="100" cy="43" r="30" fill="#1d1826" stroke="#9c62ff" stroke-width="2"/><circle cx="100" cy="43" r="22" fill="none" stroke="#b184ff" opacity="0.6"/><circle cx="100" cy="38" r="6" fill="#b184ff"/></svg>`,
-  motion: `<svg viewBox="0 0 200 86"><rect x="30" y="14" width="140" height="58" rx="10" fill="#14111a" stroke="#2c2340"/><circle cx="70" cy="52" r="9" fill="#9c62ff"/><circle cx="100" cy="44" r="9" fill="rgba(156,98,255,0.45)"/><circle cx="130" cy="52" r="9" fill="rgba(156,98,255,0.2)"/><rect x="56" y="64" width="88" height="3" rx="1.5" fill="#3a3049"/></svg>`,
+  hero: `<svg viewBox="0 0 200 86"><rect x="30" y="8" width="140" height="70" rx="10" fill="#111111" stroke="#333333"/><circle cx="140" cy="30" r="16" fill="rgba(255,234,0,0.4)"/><rect x="62" y="30" width="76" height="34" rx="6" fill="#1a1a1a" stroke="#ffea00"/><rect x="70" y="38" width="40" height="6" rx="3" fill="#ffffff"/><rect x="70" y="48" width="60" height="4" rx="2" fill="#666666"/></svg>`,
+  chart: `<svg viewBox="0 0 200 86"><rect x="30" y="8" width="140" height="70" rx="10" fill="#111111" stroke="#333333"/><rect x="52" y="44" width="14" height="24" rx="3" fill="#ffea00"/><rect x="72" y="34" width="14" height="34" rx="3" fill="#ccbb00"/><rect x="92" y="40" width="14" height="28" rx="3" fill="#ffea00"/><rect x="112" y="28" width="14" height="40" rx="3" fill="#ccbb00"/><rect x="132" y="36" width="14" height="32" rx="3" fill="#ffea00"/></svg>`,
+  badge: `<svg viewBox="0 0 200 86"><circle cx="100" cy="43" r="30" fill="#111111" stroke="#ffea00" stroke-width="2"/><circle cx="100" cy="43" r="22" fill="none" stroke="#ffea00" opacity="0.6"/><circle cx="100" cy="38" r="6" fill="#ffea00"/></svg>`,
+  motion: `<svg viewBox="0 0 200 86"><rect x="30" y="14" width="140" height="58" rx="10" fill="#111111" stroke="#333333"/><circle cx="70" cy="52" r="9" fill="#ffea00"/><circle cx="100" cy="44" r="9" fill="rgba(255,234,0,0.45)"/><circle cx="130" cy="52" r="9" fill="rgba(255,234,0,0.2)"/><rect x="56" y="64" width="88" height="3" rx="1.5" fill="#333333"/></svg>`,
 };
 
 export const TEMPLATES: Template[] = [

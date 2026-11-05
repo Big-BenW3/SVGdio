@@ -23,3 +23,7 @@ dist/
 
 # screenshots are committed intentionally (see screenshots/)
 .playwright-cli/
+audit.md
+report.md
+TODO.md
+screenshots/
